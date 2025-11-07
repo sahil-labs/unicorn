@@ -4,26 +4,26 @@ import { useEffect, useState } from 'react'
 import { Sidebar } from '@/components/dashboard/sidebar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus, Edit, Trash2, Eye, EyeOff, Package } from 'lucide-react'
+import { Plus, Edit, Trash2, Eye, EyeOff, Ticket, Copy } from 'lucide-react'
 import Link from 'next/link'
-import { getBrandProducts, toggleProductStatus, deleteProduct, Product } from '@/lib/products-api'
+import { getBrandCoupons, toggleCouponStatus, deleteCoupon, Coupon } from '@/lib/coupons-api'
 
-export default function BrandProductsPage() {
-  const [products, setProducts] = useState<Product[]>([])
+export default function BrandCouponsPage() {
+  const [coupons, setCoupons] = useState<Coupon[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    fetchProducts()
+    fetchCoupons()
   }, [])
 
-  const fetchProducts = async () => {
+  const fetchCoupons = async () => {
     try {
       setIsLoading(true)
-      const response = await getBrandProducts()
-      setProducts(response.data || [])
+      const response = await getBrandCoupons()
+      setCoupons(response.data || [])
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load products')
+      setError(err instanceof Error ? err.message : 'Failed to load coupons')
     } finally {
       setIsLoading(false)
     }
@@ -31,28 +31,34 @@ export default function BrandProductsPage() {
 
   const handleToggleStatus = async (id: string) => {
     try {
-      await toggleProductStatus(id)
-      // Update local state
-      setProducts(products.map(p => 
-        p._id === id ? { ...p, isActive: !p.isActive } : p
+      await toggleCouponStatus(id)
+      setCoupons(coupons.map(c => 
+        c._id === id ? { ...c, isActive: !c.isActive } : c
       ))
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to update product status')
+      alert(err instanceof Error ? err.message : 'Failed to update coupon status')
     }
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this product?')) {
+    if (!confirm('Are you sure you want to delete this coupon?')) {
       return
     }
 
     try {
-      await deleteProduct(id)
-      setProducts(products.filter(p => p._id !== id))
+      await deleteCoupon(id)
+      setCoupons(coupons.filter(c => c._id !== id))
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to delete product')
+      alert(err instanceof Error ? err.message : 'Failed to delete coupon')
     }
   }
+
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard.writeText(code)
+    alert(`Copied: ${code}`)
+  }
+
+  const isExpired = (date: string) => new Date(date) < new Date()
 
   return (
     <div className="flex h-screen">
@@ -62,13 +68,13 @@ export default function BrandProductsPage() {
         <div className="container mx-auto p-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Products</h1>
-              <p className="text-muted-foreground">Manage your product catalog</p>
+              <h1 className="text-3xl font-bold">Coupons</h1>
+              <p className="text-muted-foreground">Manage discount codes for your products</p>
             </div>
-            <Link href="/brand/products/new">
+            <Link href="/brand/coupons/new">
               <Button className="gap-2">
                 <Plus className="h-4 w-4" />
-                Add Product
+                Create Coupon
               </Button>
             </Link>
           </div>
@@ -81,9 +87,9 @@ export default function BrandProductsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>All Products</CardTitle>
+              <CardTitle>All Coupons</CardTitle>
               <CardDescription>
-                {isLoading ? 'Loading...' : `${products.length} products in your catalog`}
+                {isLoading ? 'Loading...' : `${coupons.length} coupons created`}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -91,54 +97,65 @@ export default function BrandProductsPage() {
                 <div className="flex items-center justify-center py-12">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
                 </div>
-              ) : products.length === 0 ? (
-                // Empty State
+              ) : coupons.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="rounded-full bg-purple-100 dark:bg-purple-900/20 p-4 mb-4">
-                    <Package className="h-8 w-8 text-purple-600" />
+                    <Ticket className="h-8 w-8 text-purple-600" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">No products yet</h3>
+                  <h3 className="text-lg font-semibold mb-2">No coupons yet</h3>
                   <p className="text-muted-foreground mb-6 max-w-md">
-                    Start building your catalog by adding your first product. Creators will be able to promote your products and earn commissions.
+                    Create discount coupons to boost sales and reward your customers. Creators can share these codes to drive conversions.
                   </p>
-                  <Link href="/brand/products/new">
+                  <Link href="/brand/coupons/new">
                     <Button className="gap-2">
                       <Plus className="h-4 w-4" />
-                      Add Your First Product
+                      Create Your First Coupon
                     </Button>
                   </Link>
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {products.map((product) => (
+                  {coupons.map((coupon) => (
                     <div
-                      key={product._id}
+                      key={coupon._id}
                       className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent/50 transition-colors"
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-4 flex-1">
                         <div className="h-16 w-16 rounded-lg bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-                          {product.images && product.images.length > 0 ? (
-                            <img src={product.images[0]} alt={product.name} className="h-full w-full object-cover rounded-lg" />
-                          ) : (
-                            <span className="text-purple-600 font-medium text-lg">{product.name[0]}</span>
-                          )}
+                          <Ticket className="h-8 w-8 text-purple-600" />
                         </div>
-                        <div>
-                          <h3 className="font-semibold">{product.name}</h3>
-                          <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                            <span>₹{product.price.toLocaleString()}</span>
-                            {product.salePrice && (
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-1">
+                            <h3 className="font-semibold text-lg">{coupon.code}</h3>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-6 px-2"
+                              onClick={() => handleCopyCode(coupon.code)}
+                            >
+                              <Copy className="h-3 w-3" />
+                            </Button>
+                            {isExpired(coupon.expiresAt) && (
+                              <span className="text-xs bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400 px-2 py-1 rounded">
+                                Expired
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-2">{coupon.description}</p>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span className="font-medium text-green-600">
+                              {coupon.discountType === 'percentage' ? `${coupon.discountValue}% OFF` : `₹${coupon.discountValue} OFF`}
+                            </span>
+                            {coupon.minimumPurchase > 0 && (
                               <>
                                 <span>•</span>
-                                <span className="text-green-600">₹{product.salePrice.toLocaleString()} sale</span>
+                                <span>Min: ₹{coupon.minimumPurchase}</span>
                               </>
                             )}
                             <span>•</span>
-                            <span>{product.commissionRate}% commission</span>
+                            <span>{coupon.usageCount} / {coupon.usageLimit || '∞'} used</span>
                             <span>•</span>
-                            <span>{product.clicks} clicks</span>
-                            <span>•</span>
-                            <span>{product.conversions} sales</span>
+                            <span>Expires: {new Date(coupon.expiresAt).toLocaleDateString()}</span>
                           </div>
                         </div>
                       </div>
@@ -147,10 +164,10 @@ export default function BrandProductsPage() {
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          className={`gap-2 ${product.isActive ? 'text-green-600' : 'text-muted-foreground'}`}
-                          onClick={() => handleToggleStatus(product._id)}
+                          className={`gap-2 ${coupon.isActive ? 'text-green-600' : 'text-muted-foreground'}`}
+                          onClick={() => handleToggleStatus(coupon._id)}
                         >
-                          {product.isActive ? (
+                          {coupon.isActive ? (
                             <>
                               <Eye className="h-4 w-4" />
                               Active
@@ -162,7 +179,7 @@ export default function BrandProductsPage() {
                             </>
                           )}
                         </Button>
-                        <Link href={`/brand/products/${product._id}/edit`}>
+                        <Link href={`/brand/coupons/${coupon._id}/edit`}>
                           <Button variant="ghost" size="sm" title="Edit">
                             <Edit className="h-4 w-4" />
                           </Button>
@@ -171,7 +188,7 @@ export default function BrandProductsPage() {
                           variant="ghost" 
                           size="sm" 
                           className="text-destructive"
-                          onClick={() => handleDelete(product._id)}
+                          onClick={() => handleDelete(coupon._id)}
                           title="Delete"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -188,3 +205,4 @@ export default function BrandProductsPage() {
     </div>
   )
 }
+

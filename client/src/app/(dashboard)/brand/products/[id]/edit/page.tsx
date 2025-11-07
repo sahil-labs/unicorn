@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useRouter, useParams } from 'next/navigation'
 import { Sidebar } from '@/components/dashboard/sidebar'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,11 +9,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
-import { createProduct, CreateProductData } from '@/lib/products-api'
+import { getProduct, updateProduct, CreateProductData, Product } from '@/lib/products-api'
 
-export default function NewProductPage() {
+export default function EditProductPage() {
   const router = useRouter()
+  const params = useParams()
+  const productId = params.id as string
+  
   const [isLoading, setIsLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(true)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState<CreateProductData & { imageUrl?: string }>({
     name: '',
@@ -26,6 +30,36 @@ export default function NewProductPage() {
     tags: '',
     imageUrl: '',
   })
+
+  useEffect(() => {
+    fetchProduct()
+  }, [productId])
+
+  const fetchProduct = async () => {
+    try {
+      setIsFetching(true)
+      const response = await getProduct(productId)
+      
+      if (response.success && response.data) {
+        const product = response.data
+        setFormData({
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          salePrice: product.salePrice,
+          productUrl: product.productUrl,
+          commissionRate: product.commissionRate,
+          category: product.category || '',
+          tags: product.tags.join(', '),
+          imageUrl: product.images && product.images.length > 0 ? product.images[0] : '',
+        })
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load product')
+    } finally {
+      setIsFetching(false)
+    }
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value, type } = e.target
@@ -56,15 +90,26 @@ export default function NewProductPage() {
       }
       delete (productData as any).imageUrl // Remove temporary field
 
-      const response = await createProduct(productData)
+      const response = await updateProduct(productId, productData)
 
       if (response.success) {
         router.push('/brand/products')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create product')
+      setError(err instanceof Error ? err.message : 'Failed to update product')
       setIsLoading(false)
     }
+  }
+
+  if (isFetching) {
+    return (
+      <div className="flex h-screen">
+        <Sidebar role="brand" />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        </main>
+      </div>
+    )
   }
 
   return (
@@ -81,8 +126,8 @@ export default function NewProductPage() {
           </Link>
 
           <div className="mb-8">
-            <h1 className="text-3xl font-bold">Add New Product</h1>
-            <p className="text-muted-foreground">Create a new product for creators to promote</p>
+            <h1 className="text-3xl font-bold">Edit Product</h1>
+            <p className="text-muted-foreground">Update your product details</p>
           </div>
 
           {error && (
@@ -96,7 +141,7 @@ export default function NewProductPage() {
               <CardHeader>
                 <CardTitle>Product Details</CardTitle>
                 <CardDescription>
-                  Provide information about your product
+                  Update information about your product
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -247,7 +292,7 @@ export default function NewProductPage() {
 
             <div className="flex gap-4 mt-6">
               <Button type="submit" disabled={isLoading} className="flex-1">
-                {isLoading ? 'Creating...' : 'Create Product'}
+                {isLoading ? 'Updating...' : 'Update Product'}
               </Button>
               <Button type="button" variant="outline" onClick={() => router.back()}>
                 Cancel
@@ -259,3 +304,4 @@ export default function NewProductPage() {
     </div>
   )
 }
+
