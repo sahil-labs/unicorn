@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Chrome } from "lucide-react";
+import { Chrome, Sparkles, ArrowLeft } from "lucide-react";
 import { login } from "@/lib/auth-api";
 
 export default function LoginPage() {
@@ -68,21 +68,37 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-purple-50/50 to-white dark:from-purple-950/10 dark:to-background">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <Link href="/" className="inline-block mb-6">
-            <span className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Micro-Creator
+        {/* Back to Home */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to home
+        </Link>
+
+        {/* Logo & Heading */}
+        <div className="text-center space-y-4">
+          <Link href="/" className="inline-flex items-center gap-2 justify-center">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <Sparkles className="h-6 w-6 text-white" />
+            </div>
+            <span className="text-2xl font-bold text-primary">
+              CreatorAds
             </span>
           </Link>
-          <h1 className="text-2xl font-bold">Welcome Back</h1>
-          <p className="text-muted-foreground mt-2">
-            Sign in to your account to continue
-          </p>
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Welcome Back</h1>
+            <p className="text-muted-foreground mt-2">
+              Sign in to continue earning or managing campaigns
+            </p>
+          </div>
         </div>
 
-        <Card>
+        {/* Login Card */}
+        <Card className="border-2">
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>
@@ -94,7 +110,7 @@ export default function LoginPage() {
               onClick={handleGoogleSignIn}
               disabled={isLoading}
               variant="outline"
-              className="w-full gap-2"
+              className="w-full gap-2 border-2"
               size="lg"
             >
               <Chrome className="h-5 w-5" />
@@ -122,6 +138,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="border-2"
                 />
               </div>
               <div className="space-y-2">
@@ -129,7 +146,7 @@ export default function LoginPage() {
                   <Label htmlFor="password">Password</Label>
                   <Link
                     href="/forgot-password"
-                    className="text-xs text-primary hover:underline"
+                    className="text-xs text-secondary hover:text-secondary/80 font-medium transition-colors"
                   >
                     Forgot password?
                   </Link>
@@ -141,33 +158,42 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  className="border-2"
                 />
               </div>
               {error && (
-                <div className="text-sm text-red-600 bg-red-50 dark:bg-red-900/10 p-3 rounded-lg">
+                <div className="text-sm text-red-600 bg-red-50 dark:bg-red-900/10 p-3 rounded-lg border-2 border-red-200 dark:border-red-900/50">
                   {error}
                 </div>
               )}
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-secondary hover:bg-secondary/90"
                 size="lg"
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign In with Email"}
+                {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
           </CardContent>
         </Card>
 
+        {/* Sign Up Link */}
         <div className="text-center text-sm">
           <span className="text-muted-foreground">Don't have an account? </span>
           <Link
             href="/signup"
-            className="font-medium text-primary hover:underline"
+            className="font-semibold text-secondary hover:text-secondary/80 transition-colors"
           >
-            Sign up
+            Create account
           </Link>
+        </div>
+
+        {/* Trust Indicators */}
+        <div className="pt-4 text-center space-y-2">
+          <p className="text-xs text-muted-foreground">
+            Trusted by 12,000+ creators and 500+ brands
+          </p>
         </div>
       </div>
     </div>

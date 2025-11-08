@@ -6,13 +6,20 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Micro-Creator Affiliate - India\'s First Affiliate Marketplace for Micro-Creators',
-  description: 'Make ₹ per sale, not ₹ per post. No apply, no approval — just promote & earn.',
-  keywords: ['affiliate marketing', 'creator economy', 'india', 'micro-creators', 'commission'],
+  title: 'CreatorAds - India\'s First CPC Traffic Marketplace for Micro-Creators',
+  description: 'Make ₹ per click, not ₹ per post. India\'s first traffic marketplace built for micro‑creators. No apply, no approval — just promote & earn. Brands: buy real influencer traffic on CPC, cheaper than Meta ads.',
+  keywords: ['creator ads', 'CPC marketing', 'creator economy', 'india', 'micro-creators', 'influencer marketing', 'cost per click', 'performance marketing', 'creator network'],
   openGraph: {
-    title: 'Micro-Creator Affiliate Marketplace',
-    description: 'India\'s first affiliate marketplace built for micro-creators',
+    title: 'CreatorAds - CPC Traffic Marketplace for Creators & Brands',
+    description: 'For Creators: Earn ₹5-₹15 per click. For Brands: Buy influencer traffic on CPC. India\'s first performance-based creator ads network.',
     type: 'website',
+    siteName: 'CreatorAds',
+    locale: 'en_IN',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CreatorAds - India\'s First CPC Creator Ads Network',
+    description: 'Creators earn per click. Brands pay per click. No sales pressure. Performance-based influencer marketing.',
   },
 }
 

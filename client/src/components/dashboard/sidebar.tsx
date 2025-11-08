@@ -13,6 +13,7 @@ import {
   BarChart3,
   Settings,
   LogOut,
+  Sparkles,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -58,9 +59,10 @@ export function Sidebar({ role }: SidebarProps) {
     <div className="flex h-full w-64 flex-col border-r bg-card">
       <div className="border-b p-6">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Micro-Creator
-          </span>
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            <Sparkles className="h-5 w-5 text-white" />
+          </div>
+          <span className="text-xl font-bold text-primary">CreatorAds</span>
         </Link>
       </div>
 
@@ -77,8 +79,8 @@ export function Sidebar({ role }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-purple-100 text-purple-900 dark:bg-purple-900/20 dark:text-purple-100"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-secondary/10 text-secondary dark:bg-secondary/20 dark:text-secondary"
+                  : "text-muted-foreground hover:bg-accent/10 hover:text-accent-foreground"
               )}
             >
               <Icon className="h-4 w-4" />
