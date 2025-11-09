@@ -17,17 +17,28 @@ async function checkExpressAuth(request: NextRequest) {
       headers: {
         'Cookie': `token=${token}`,
       },
+      // Add timeout to prevent hanging
+      signal: AbortSignal.timeout(5000), // 5 second timeout
     })
 
     if (!response.ok) {
-      return null
+      // Only return null for auth errors (401, 403)
+      // For server errors (500, 503), allow access (don't force logout)
+      if (response.status === 401 || response.status === 403) {
+        return null
+      }
+      // For other errors, assume token is still valid (graceful degradation)
+      console.warn('Auth check returned non-auth error:', response.status)
+      return { role: null } // Allow access but without role info
     }
 
     const data = await response.json()
     return data.data // Returns user object with role
   } catch (error) {
-    console.error('Express auth check failed:', error)
-    return null
+    // If server is down or network error, don't force logout
+    // Just log and allow access (graceful degradation)
+    console.warn('Express auth check failed (allowing access):', error)
+    return { role: null } // Allow access but without role check
   }
 }
 

@@ -4,6 +4,8 @@ import authRoutes from "./authRoutes";
 import productRoutes from "./productRoutes";
 import couponRoutes from "./couponRoutes";
 import analyticsRoutes from "./analyticsRoutes";
+import creatorRoutes from "./creatorRoutes";
+import brandRoutes from "./brandRoutes";
 
 const router = Router();
 
@@ -21,6 +23,8 @@ router.use("/auth", authRoutes);
 router.use("/products", productRoutes);
 router.use("/coupons", couponRoutes);
 router.use("/analytics", analyticsRoutes);
+router.use("/creator", creatorRoutes);
+router.use("/brand", brandRoutes);
 router.use("/users", userRoutes);
 
 export default router;

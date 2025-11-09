@@ -95,7 +95,7 @@ export default function BrandLandingPage() {
       </header>
 
       {/* Hero Section - Brand Focused */}
-      <section className="container mx-auto px-4 py-16 md:py-32">
+      <section className="container mx-auto px-4 py-16 md:py-28">
         <div className="max-w-5xl mx-auto text-center">
           <Badge
             variant="default"

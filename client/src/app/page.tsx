@@ -79,7 +79,7 @@ export default function Home() {
       </header>
 
       {/* Hero Section - Creator Focused */}
-      <section className="container mx-auto px-4 py-16 md:py-32">
+      <section className="container mx-auto px-4 py-16 md:py-28">
         <div className="max-w-5xl mx-auto text-center">
           <Badge
             variant="secondary"
@@ -93,12 +93,12 @@ export default function Home() {
             <br />
             built for{" "}
             <span className="bg-gradient-to-r from-accent to-green-400 bg-clip-text text-transparent">
-              micro‑creators
+              creators
             </span>
           </h1>
 
           <p className="text-2xl md:text-3xl text-foreground font-semibold mb-4">
-            Make ₹ per click, not ₹ per post.
+            Make ₹ per click, not ₹ per sale.
           </p>
 
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
@@ -372,7 +372,7 @@ export default function Home() {
                 </span>
               </div>
               <p className="text-sm text-muted-foreground">
-                India's first traffic marketplace built for micro‑creators
+                India's first traffic marketplace built for creators
               </p>
             </div>
             <div>

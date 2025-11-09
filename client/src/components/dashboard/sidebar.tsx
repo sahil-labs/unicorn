@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +15,8 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react";
+import { logout } from "@/lib/auth-api";
+import { useState } from "react";
 
 interface SidebarProps {
   role: "brand" | "creator" | "admin";
@@ -22,6 +24,8 @@ interface SidebarProps {
 
 export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const brandLinks = [
     { href: "/brand", label: "Dashboard", icon: LayoutDashboard },
@@ -54,6 +58,25 @@ export function Sidebar({ role }: SidebarProps) {
       : role === "creator"
       ? creatorLinks
       : adminLinks;
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      
+      // Redirect to home page
+      router.push('/');
+      
+      // Force a hard refresh to clear all client-side state
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
+      // Even if API fails, clear client and redirect
+      window.location.href = '/';
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <div className="flex h-full w-64 flex-col border-r bg-card">
@@ -95,9 +118,11 @@ export function Sidebar({ role }: SidebarProps) {
           variant="ghost"
           className="w-full justify-start gap-3"
           size="sm"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
         >
           <LogOut className="h-4 w-4" />
-          Logout
+          {isLoggingOut ? "Logging out..." : "Logout"}
         </Button>
       </div>
     </div>

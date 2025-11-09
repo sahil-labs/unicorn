@@ -25,6 +25,7 @@ export interface IProduct extends Document {
   isActive: boolean;
   clicks: number;
   conversions: number;
+  creatorsInterestedCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -44,6 +45,35 @@ export interface ICoupon extends Document {
   createdAt: Date;
   updatedAt: Date;
   isValid(): boolean;
+}
+
+export interface IClick extends Document {
+  creatorId: mongoose.Types.ObjectId;
+  productId: mongoose.Types.ObjectId;
+  brandId: mongoose.Types.ObjectId;
+  trackingUrl: string;
+  ipAddress: string;
+  userAgent?: string;
+  referrer?: string;
+  isVerified: boolean;
+  earnings: number;
+  status: "pending" | "verified" | "rejected";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ICreatorLink extends Document {
+  creatorId: mongoose.Types.ObjectId;
+  productId: mongoose.Types.ObjectId;
+  brandId: mongoose.Types.ObjectId;
+  trackingUrl: string;
+  trackingCode: string;
+  accessedLink: boolean;
+  clicks: number;
+  earnings: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface IResponse<T> {

@@ -44,31 +44,30 @@ const productValidation = [
     .notEmpty()
     .withMessage("Category is required")
     .isIn([
-      'Electronics',
-      'Fashion & Apparel',
-      'Beauty & Personal Care',
-      'Home & Kitchen',
-      'Health & Fitness',
-      'Books & Stationery',
-      'Sports & Outdoors',
-      'Toys & Games',
-      'Jewelry & Accessories',
-      'Food & Beverages',
-      'Mobile & Accessories',
-      'Computers & Laptops',
-      'Automotive',
-      'Baby Products',
-      'Pet Supplies',
-      'Office Supplies',
-      'Music & Instruments',
-      'Art & Crafts',
-      'Digital Products',
-      'Services',
-      'Other',
+      "Electronics",
+      "Fashion & Apparel",
+      "Beauty & Personal Care",
+      "Home & Kitchen",
+      "Health & Fitness",
+      "Books & Stationery",
+      "Sports & Outdoors",
+      "Toys & Games",
+      "Jewelry & Accessories",
+      "Food & Beverages",
+      "Mobile & Accessories",
+      "Computers & Laptops",
+      "Automotive",
+      "Baby Products",
+      "Pet Supplies",
+      "Office Supplies",
+      "Music & Instruments",
+      "Art & Crafts",
+      "Digital Products",
+      "Services",
+      "Other",
     ])
     .withMessage("Please select a valid category"),
-  body("tags")
-    .optional(),
+  body("tags").optional(),
 ];
 
 // Public routes
@@ -79,6 +78,7 @@ router.use(verifyToken); // All routes below require auth
 
 // Brand routes
 router.get("/my-products", getBrandProducts); // Brand's own products
+router.get("/", getAllActiveProducts); // All products
 router.post("/", productValidation, validateRequest, createProduct);
 router.get("/:id", getProduct);
 router.put("/:id", productValidation, validateRequest, updateProduct);
@@ -87,4 +87,3 @@ router.delete("/:id", deleteProduct);
 router.post("/:id/click", incrementClicks);
 
 export default router;
-
